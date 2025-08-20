@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Code2, History, Template, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Code2, History, FileText, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ViewType } from './Dashboard';
@@ -15,7 +15,7 @@ interface SidebarProps {
 const sidebarItems = [
   { id: 'editor' as ViewType, label: 'Code Editor', icon: Code2 },
   { id: 'history' as ViewType, label: 'Generation History', icon: History },
-  { id: 'templates' as ViewType, label: 'Templates', icon: Template },
+  { id: 'templates' as ViewType, label: 'Templates', icon: FileText },
   { id: 'settings' as ViewType, label: 'Settings', icon: Settings },
 ];
 
