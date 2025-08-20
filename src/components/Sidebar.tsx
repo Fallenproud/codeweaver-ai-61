@@ -3,7 +3,7 @@ import React from 'react';
 import { Code2, History, FileText, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { ViewType } from './Dashboard';
+import type { ViewType } from './layout/ResponsiveDashboard';
 
 interface SidebarProps {
   activeView: ViewType;
@@ -67,9 +67,9 @@ export const Sidebar = ({ activeView, onViewChange, collapsed, onToggleCollapse 
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border rounded-lg mx-2 mb-2 bg-surface-hover/50">
         <div className={cn(
-          "text-xs text-muted",
+          "text-xs text-muted text-center",
           collapsed && "text-center"
         )}>
           {collapsed ? "v1.0" : "CodeWeaver AI v1.0"}
