@@ -20,7 +20,10 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
+        border: {
+          DEFAULT: "hsl(var(--border))",
+          subtle: "hsl(var(--border-subtle))",
+        },
         input: "hsl(var(--border))",
         ring: "hsl(var(--accent-cyan))",
         background: "hsl(var(--background))",
