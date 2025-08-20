@@ -5,6 +5,9 @@ import { MonacoEditor } from './advanced/MonacoEditor';
 import { EnhancedPreview } from './advanced/EnhancedPreview';
 import { AIGenerationPanel } from './advanced/AIGenerationPanel';
 import { FileExplorer } from './advanced/FileExplorer';
+import { CollaborationPanel } from './collaboration/CollaborationPanel';
+import { AdvancedAI } from './advanced/AdvancedAI';
+import { PerformanceMonitor } from './performance/PerformanceMonitor';
 import { GenerationHistory } from './GenerationHistory';
 import { TemplateLibrary } from './TemplateLibrary';
 import { SettingsPanel } from './SettingsPanel';
@@ -25,7 +28,12 @@ const Dashboard = () => {
               <FileExplorer />
             </div>
             <div className="w-80">
-              <AIGenerationPanel />
+              <div className="h-1/2">
+                <AIGenerationPanel />
+              </div>
+              <div className="h-1/2 border-t border-border">
+                <AdvancedAI />
+              </div>
             </div>
             <div className="flex-1 flex flex-col">
               <MonacoEditor
@@ -36,7 +44,19 @@ const Dashboard = () => {
               />
             </div>
             <div className="w-1/2 border-l border-border">
-              <EnhancedPreview />
+              <div className="h-3/4">
+                <EnhancedPreview />
+              </div>
+              <div className="h-1/4 border-t border-border">
+                <div className="flex">
+                  <div className="w-1/2">
+                    <CollaborationPanel />
+                  </div>
+                  <div className="w-1/2 border-l border-border">
+                    <PerformanceMonitor />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
