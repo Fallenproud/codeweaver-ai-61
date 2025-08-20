@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { FileText, Folder, Plus, X, Edit3, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppContext } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
+import JSZip from 'jszip';
 
 export const FileExplorer: React.FC = () => {
   const { state, dispatch } = useAppContext();

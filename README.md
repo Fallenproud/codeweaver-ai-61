@@ -1,73 +1,164 @@
-# Welcome to your Lovable project
 
-## Project info
+# CodeWeaver AI - AI-Powered Web Development Platform
 
-**URL**: https://lovable.dev/projects/80e7ee04-d5ec-48a1-91c9-29185234adbe
+CodeWeaver AI is a comprehensive web development platform that combines the power of AI with professional development tools to create, edit, and deploy web applications in real-time.
 
-## How can I edit this code?
+## 🚀 Features
 
-There are several ways of editing your application.
+### Core Development Environment
+- **Advanced Monaco Code Editor** - VS Code-powered editor with syntax highlighting, auto-completion, and IntelliSense
+- **Real-Time Preview** - Live preview with device simulation (mobile, tablet, desktop)
+- **Multi-File Project Management** - Create, edit, and organize project files with ease
+- **Export & Download** - Export projects as ZIP files or integrate with version control
 
-**Use Lovable**
+### AI-Powered Generation
+- **Intelligent Code Generation** - Generate HTML, CSS, JavaScript, and React components using AI
+- **Real-Time Streaming** - Watch as AI generates code in real-time with progress tracking
+- **Context-Aware Suggestions** - AI understands your project context for better code generation
+- **Multiple AI Models** - Support for various AI providers and models
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/80e7ee04-d5ec-48a1-91c9-29185234adbe) and start prompting.
+### Advanced Preview System
+- **Device Simulation** - Test your applications across different screen sizes
+- **Screenshot Capture** - Take screenshots of your applications for documentation
+- **Responsive Testing** - Built-in breakpoint testing tools
+- **External Link Preview** - Open generated applications in new tabs
 
-Changes made via Lovable will be committed automatically to this repo.
+### Template System
+- **Pre-built Templates** - Access to a library of professional templates
+- **Template Customization** - Modify templates to fit your specific needs
+- **Preview Before Use** - See template previews before applying them to your project
+- **Community Templates** - Share and discover templates from the community
 
-**Use your preferred IDE**
+## 🛠 Technology Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for fast development and building
+- **Styling**: Tailwind CSS with custom design system
+- **UI Components**: Radix UI primitives with shadcn/ui
+- **Code Editor**: Monaco Editor (VS Code engine)
+- **State Management**: React Context API with React Query
+- **Icons**: Lucide React
+- **File Operations**: JSZip for project export
+- **Screenshot**: html2canvas for preview capture
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📁 Project Structure
 
-Follow these steps:
+```
+src/
+├── components/
+│   ├── ui/                     # Reusable UI components (shadcn/ui)
+│   ├── advanced/               # Advanced feature components
+│   │   ├── MonacoEditor.tsx    # Code editor component
+│   │   ├── EnhancedPreview.tsx # Live preview component
+│   │   ├── AIGenerationPanel.tsx # AI generation interface
+│   │   └── FileExplorer.tsx    # File management component
+│   ├── Dashboard.tsx           # Main application dashboard
+│   ├── Header.tsx              # Application header
+│   └── Sidebar.tsx             # Navigation sidebar
+├── contexts/
+│   └── AppContext.tsx          # Global application state
+├── services/
+│   └── aiService.ts            # AI integration service
+├── hooks/                      # Custom React hooks
+├── lib/
+│   └── utils.ts                # Utility functions
+└── pages/                      # Application pages
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🎨 Design System
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+The application uses a carefully crafted design system with:
+- **Semantic Color Tokens** - HSL-based color system for consistent theming
+- **Responsive Grid System** - Mobile-first responsive design
+- **Animation System** - Smooth transitions and micro-interactions
+- **Typography Scale** - Consistent text sizing and spacing
+- **Component Variants** - Flexible component styling options
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🔧 Development
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn package manager
+
+### Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to project directory
+cd codeweaver-ai
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🌟 Key Components
 
-**Use GitHub Codespaces**
+### Dashboard
+The main application interface that orchestrates all components and manages the overall user experience.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Monaco Editor
+Professional code editor with:
+- Syntax highlighting for multiple languages
+- Auto-completion and IntelliSense
+- Find/replace functionality
+- Code formatting
+- Error detection
 
-## What technologies are used for this project?
+### Enhanced Preview
+Real-time preview system featuring:
+- Live updates as you type
+- Device simulation frames
+- Screenshot capabilities
+- Responsive breakpoint testing
 
-This project is built with:
+### AI Generation Panel
+Intelligent code generation with:
+- Real-time streaming responses
+- Generation progress tracking
+- Context-aware suggestions
+- Multiple AI model support
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### File Explorer
+Comprehensive file management:
+- Create, edit, and delete files
+- Project organization
+- File type detection
+- Export capabilities
 
-## How can I deploy this project?
+## 🚀 Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/80e7ee04-d5ec-48a1-91c9-29185234adbe) and click on Share -> Publish.
+The application can be deployed to various platforms:
+- **Vercel** - Recommended for React applications
+- **Netlify** - Great for static sites with CI/CD
+- **AWS S3 + CloudFront** - Scalable cloud deployment
+- **GitHub Pages** - Free hosting for open source projects
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 Contributing
 
-Yes, you can!
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📄 License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) for the code editor
+- [Radix UI](https://www.radix-ui.com/) for accessible UI primitives
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+- [Lucide](https://lucide.dev/) for beautiful icons
+- [Vite](https://vitejs.dev/) for fast build tooling
