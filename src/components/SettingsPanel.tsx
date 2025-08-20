@@ -1,221 +1,219 @@
 
 import React, { useState } from 'react';
-import { Brain, Sliders, Palette, Zap } from 'lucide-react';
+import { Settings, User, Palette, Keyboard, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AISettingsPanel } from '@/components/settings/AISettingsPanel';
+import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { useAppContext } from '@/contexts/AppContext';
+import { toast } from '@/components/ui/use-toast';
 
 export const SettingsPanel = () => {
-  const [temperature, setTemperature] = useState([0.7]);
-  const [creativity, setCreativity] = useState([0.8]);
+  const { state } = useAppContext();
+  const [theme, setTheme] = useState('dark');
+  const [autoSave, setAutoSave] = useState(true);
+  const [notifications, setNotifications] = useState(true);
+
+  const handleExportSettings = () => {
+    const settings = {
+      generationSettings: state.generationSettings,
+      theme,
+      autoSave,
+      notifications
+    };
+    
+    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'codeweaver-settings.json';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Settings Exported",
+      description: "Your settings have been exported successfully.",
+    });
+  };
+
+  const handleImportSettings = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const settings = JSON.parse(e.target?.result as string);
+        // Apply imported settings
+        toast({
+          title: "Settings Imported",
+          description: "Your settings have been imported successfully.",
+        });
+      } catch (error) {
+        toast({
+          title: "Import Failed",
+          description: "Failed to import settings. Please check the file format.",
+          variant: "destructive"
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="h-full bg-background p-6 overflow-auto">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-foreground mb-2">Settings</h2>
-        <p className="text-muted">Customize your AI development environment</p>
+        <p className="text-muted">Customize your CodeWeaver AI experience</p>
       </div>
 
-      <div className="space-y-8 max-w-2xl">
-        {/* AI Model Settings */}
-        <div className="glass-card rounded-xl p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Brain className="w-5 h-5 text-accent-cyan" />
-            <h3 className="text-lg font-semibold text-foreground">AI Model Settings</h3>
-          </div>
-          
+      <Tabs defaultValue="ai" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="ai" className="flex items-center space-x-2">
+            <Settings className="w-4 h-4" />
+            <span>AI</span>
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="flex items-center space-x-2">
+            <Palette className="w-4 h-4" />
+            <span>Appearance</span>
+          </TabsTrigger>
+          <TabsTrigger value="editor" className="flex items-center space-x-2">
+            <Keyboard className="w-4 h-4" />
+            <span>Editor</span>
+          </TabsTrigger>
+          <TabsTrigger value="account" className="flex items-center space-x-2">
+            <User className="w-4 h-4" />
+            <span>Account</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="ai" className="space-y-6">
+          <AISettingsPanel />
+        </TabsContent>
+
+        <TabsContent value="appearance" className="space-y-6">
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="model-select" className="text-foreground mb-2 block">AI Model</Label>
-              <Select defaultValue="gpt-4">
-                <SelectTrigger className="bg-surface border-border">
-                  <SelectValue placeholder="Select AI model" />
+            <h3 className="text-lg font-semibold">Appearance</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="theme">Theme</Label>
+              <Select value={theme} onValueChange={setTheme}>
+                <SelectTrigger id="theme">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="gpt-4">GPT-4 (Balanced)</SelectItem>
-                  <SelectItem value="claude-3">Claude-3 (Creative)</SelectItem>
-                  <SelectItem value="gpt-3.5">GPT-3.5 (Fast)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="text-foreground mb-2 block">
-                Temperature: {temperature[0]}
-              </Label>
-              <Slider
-                value={temperature}
-                onValueChange={setTemperature}
-                max={1}
-                min={0}
-                step={0.1}
-                className="py-2"
-              />
-              <p className="text-xs text-muted mt-1">Controls randomness in AI responses</p>
-            </div>
-
-            <div>
-              <Label className="text-foreground mb-2 block">
-                Creativity Level: {creativity[0]}
-              </Label>
-              <Slider
-                value={creativity}
-                onValueChange={setCreativity}
-                max={1}
-                min={0}
-                step={0.1}
-                className="py-2"
-              />
-              <p className="text-xs text-muted mt-1">Higher values produce more creative outputs</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Generation Preferences */}
-        <div className="glass-card rounded-xl p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Sliders className="w-5 h-5 text-accent-green" />
-            <h3 className="text-lg font-semibold text-foreground">Generation Preferences</h3>
-          </div>
-          
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="framework-select" className="text-foreground mb-2 block">Default Framework</Label>
-              <Select defaultValue="react">
-                <SelectTrigger className="bg-surface border-border">
-                  <SelectValue placeholder="Select framework" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="react">React</SelectItem>
-                  <SelectItem value="vue">Vue.js</SelectItem>
-                  <SelectItem value="angular">Angular</SelectItem>
-                  <SelectItem value="vanilla">Vanilla JS</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="complexity-select" className="text-foreground mb-2 block">Code Complexity</Label>
-              <Select defaultValue="medium">
-                <SelectTrigger className="bg-surface border-border">
-                  <SelectValue placeholder="Select complexity" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="simple">Simple</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Auto-save Projects</Label>
-                <p className="text-xs text-muted">Automatically save projects every 30 seconds</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Enable Syntax Highlighting</Label>
-                <p className="text-xs text-muted">Highlight code syntax in the editor</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-          </div>
-        </div>
-
-        {/* Theme Customization */}
-        <div className="glass-card rounded-xl p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Palette className="w-5 h-5 text-accent-warning" />
-            <h3 className="text-lg font-semibold text-foreground">Theme Customization</h3>
-          </div>
-          
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="theme-select" className="text-foreground mb-2 block">Editor Theme</Label>
-              <Select defaultValue="dark">
-                <SelectTrigger className="bg-surface border-border">
-                  <SelectValue placeholder="Select theme" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="dark">Dark (Recommended)</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
                   <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="high-contrast">High Contrast</SelectItem>
+                  <SelectItem value="system">System</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="font-size" className="text-foreground mb-2 block">Font Size</Label>
-              <Input
-                id="font-size"
-                type="number"
-                defaultValue="14"
-                min="10"
-                max="24"
-                className="bg-surface border-border"
+            <div className="flex items-center justify-between">
+              <Label htmlFor="auto-save">Auto-save projects</Label>
+              <Switch
+                id="auto-save"
+                checked={autoSave}
+                onCheckedChange={setAutoSave}
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Animations</Label>
-                <p className="text-xs text-muted">Enable smooth animations and transitions</p>
-              </div>
-              <Switch defaultChecked />
+              <Label htmlFor="notifications">Show notifications</Label>
+              <Switch
+                id="notifications"
+                checked={notifications}
+                onCheckedChange={setNotifications}
+              />
             </div>
           </div>
-        </div>
+        </TabsContent>
 
-        {/* Performance */}
-        <div className="glass-card rounded-xl p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Zap className="w-5 h-5 text-accent-cyan" />
-            <h3 className="text-lg font-semibold text-foreground">Performance</h3>
-          </div>
-          
+        <TabsContent value="editor" className="space-y-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Code Minification</Label>
-                <p className="text-xs text-muted">Minify generated code for better performance</p>
-              </div>
-              <Switch defaultChecked />
+            <h3 className="text-lg font-semibold">Editor Preferences</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="font-size">Font Size</Label>
+              <Select defaultValue="14">
+                <SelectTrigger id="font-size">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="12">12px</SelectItem>
+                  <SelectItem value="14">14px</SelectItem>
+                  <SelectItem value="16">16px</SelectItem>
+                  <SelectItem value="18">18px</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="font-family">Font Family</Label>
+              <Select defaultValue="jetbrains">
+                <SelectTrigger id="font-family">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
+                  <SelectItem value="fira">Fira Code</SelectItem>
+                  <SelectItem value="consolas">Consolas</SelectItem>
+                  <SelectItem value="monaco">Monaco</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Lazy Loading</Label>
-                <p className="text-xs text-muted">Load components only when needed</p>
-              </div>
-              <Switch defaultChecked />
+              <Label htmlFor="line-numbers">Show line numbers</Label>
+              <Switch id="line-numbers" defaultChecked />
             </div>
 
             <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-foreground">Image Optimization</Label>
-                <p className="text-xs text-muted">Automatically optimize images for web</p>
-              </div>
-              <Switch defaultChecked />
+              <Label htmlFor="minimap">Show minimap</Label>
+              <Switch id="minimap" defaultChecked />
             </div>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button variant="ghost" className="text-muted hover:text-foreground">
-            Reset to Defaults
-          </Button>
-          <Button className="gradient-accent text-white">
-            Save Settings
-          </Button>
-        </div>
-      </div>
+        <TabsContent value="account" className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Account & Data</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" placeholder="Enter username" />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" placeholder="Enter email" />
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="font-medium">Settings Backup</h4>
+              <div className="flex space-x-2">
+                <Button onClick={handleExportSettings} variant="outline">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Settings
+                </Button>
+                <Button variant="outline" className="relative">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Import Settings
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImportSettings}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
