@@ -15,6 +15,7 @@ import { GenerationHistory } from '@/components/GenerationHistory';
 import { TemplateLibrary } from '@/components/TemplateLibrary';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { Header } from '@/components/Header';
+import { StatusBar } from '@/components/header/StatusBar';
 import { useAppContext } from '@/contexts/AppContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { cn } from '@/lib/utils';
@@ -65,7 +66,7 @@ const ResponsiveDashboard = () => {
   };
 
   const MobileEditorLayout = () => (
-    <div className="h-full overflow-hidden rounded-lg border border-border bg-surface">
+    <div className="h-full overflow-hidden">
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-hidden">
           <ErrorBoundary>
@@ -82,7 +83,7 @@ const ResponsiveDashboard = () => {
   );
 
   const TabletEditorLayout = () => (
-    <div className="h-full rounded-lg border border-border bg-surface overflow-hidden">
+    <div className="h-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="h-full">
         <ResizablePanel defaultSize={30} minSize={20}>
           <div className="h-full flex flex-col">
@@ -124,7 +125,7 @@ const ResponsiveDashboard = () => {
   );
 
   const DesktopEditorLayout = () => (
-    <div className="h-full rounded-lg border border-border bg-surface overflow-hidden">
+    <div className="h-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="h-full">
         <ResizablePanel defaultSize={20} minSize={15}>
           <ErrorBoundary>
@@ -203,14 +204,14 @@ const ResponsiveDashboard = () => {
   );
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden p-2">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <LoadingOverlay isVisible={state.isGenerating} text="Generating code..." />
       
       <ErrorBoundary>
         <Header />
       </ErrorBoundary>
       
-      <div className="flex flex-1 overflow-hidden gap-2 mt-2">
+      <div className="flex flex-1 overflow-hidden">
         {(!isMobile || state.activeView !== 'editor') && (
           <ErrorBoundary>
             <Sidebar 
@@ -222,14 +223,22 @@ const ResponsiveDashboard = () => {
           </ErrorBoundary>
         )}
         
-        <main className={cn(
-          'flex-1 overflow-hidden',
-          isMobile && 'w-full'
-        )}>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className={cn(
+            'flex-1 overflow-hidden p-6',
+            isMobile && 'p-4'
+          )}>
+            <div className="h-full rounded-xl border border-border bg-surface shadow-lg overflow-hidden">
+              <ErrorBoundary>
+                {renderMainContent()}
+              </ErrorBoundary>
+            </div>
+          </main>
+          
           <ErrorBoundary>
-            {renderMainContent()}
+            <StatusBar />
           </ErrorBoundary>
-        </main>
+        </div>
       </div>
     </div>
   );
