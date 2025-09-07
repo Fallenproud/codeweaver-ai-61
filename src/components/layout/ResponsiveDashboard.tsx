@@ -14,6 +14,7 @@ import { Header } from '@/components/Header';
 import { StatusBar } from '@/components/header/StatusBar';
 import { useAppContext } from '@/contexts/AppContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
 export type ViewType = 'editor' | 'history' | 'templates' | 'settings';
@@ -62,19 +63,41 @@ const ResponsiveDashboard = () => {
   };
 
   const MobileEditorLayout = () => (
-    <div className="h-full bg-surface">
+    <div className="h-full bg-background">
       <div className="h-full flex flex-col">
-        <div className="h-1/2 border-b border-border/50">
-          <UnifiedAIPanel />
-        </div>
-        <div className="h-1/2">
-          <MonacoEditor
-            onCodeChange={(code) => console.log('Code changed:', code)}
-            onRun={() => console.log('Run code')}
-            onSave={() => console.log('Save code')}
-            onDownload={() => console.log('Download code')}
-          />
-        </div>
+        {/* Mobile: Tabbed Interface for Space Efficiency */}
+        <Tabs defaultValue="ai" className="h-full flex flex-col">
+          <div className="bg-surface/80 backdrop-blur-sm border-b border-border/50 px-4 py-2">
+            <TabsList className="w-full grid grid-cols-3 bg-background/50">
+              <TabsTrigger value="ai" className="text-xs">
+                AI Assistant
+              </TabsTrigger>
+              <TabsTrigger value="editor" className="text-xs">
+                Code Editor
+              </TabsTrigger>
+              <TabsTrigger value="preview" className="text-xs">
+                Preview
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="ai" className="flex-1 m-0">
+            <UnifiedAIPanel />
+          </TabsContent>
+          
+          <TabsContent value="editor" className="flex-1 m-0">
+            <MonacoEditor
+              onCodeChange={(code) => console.log('Code changed:', code)}
+              onRun={() => console.log('Run code')}
+              onSave={() => console.log('Save code')}
+              onDownload={() => console.log('Download code')}
+            />
+          </TabsContent>
+          
+          <TabsContent value="preview" className="flex-1 m-0">
+            <CollapsibleFilePanel />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

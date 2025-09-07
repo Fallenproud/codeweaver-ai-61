@@ -382,72 +382,97 @@ export const UnifiedAIPanel: React.FC = () => {
 
         {/* Chat Tab */}
         <TabsContent value="chat" className="flex-1 flex flex-col mx-4 mb-4">
-          <div className="flex-1 overflow-auto mb-4 space-y-4 max-h-80">
-            {chatMessages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
-                    message.type === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  {message.codeBlocks && message.codeBlocks.map((block, index) => (
-                    <div key={index} className="mt-2 p-2 bg-background/50 rounded text-xs font-mono">
-                      <div className="text-muted-foreground mb-1">{block.language}</div>
-                      <pre className="whitespace-pre-wrap">{block.code}</pre>
+          {/* Chat Messages Container with Fixed Height and Scroll */}
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-1 overflow-y-auto mb-4 space-y-3 p-2 bg-surface/30 rounded-lg border border-border-subtle">
+              {chatMessages.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-muted">
+                  <div className="text-center space-y-2">
+                    <MessageSquare className="w-8 h-8 mx-auto opacity-50" />
+                    <p className="text-sm">Start a conversation with your AI assistant</p>
+                    <p className="text-xs text-muted-foreground">Ask about code, get suggestions, or request improvements</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {chatMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                    >
+                      <div
+                        className={`max-w-[85%] p-3 rounded-lg shadow-sm ${
+                          message.type === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-surface border border-border-subtle text-foreground'
+                        }`}
+                      >
+                        <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                        {message.codeBlocks && message.codeBlocks.map((block, index) => (
+                          <div key={index} className="mt-3 p-3 bg-editor-bg rounded-md text-xs font-mono border border-border-subtle">
+                            <div className="text-accent-cyan mb-2 font-medium">{block.language}</div>
+                            <pre className="whitespace-pre-wrap text-foreground-muted overflow-x-auto">{block.code}</pre>
+                          </div>
+                        ))}
+                        <div className="text-xs opacity-60 mt-2 flex items-center justify-between">
+                          <span>{new Date(message.timestamp).toLocaleTimeString()}</span>
+                          {message.type === 'assistant' && (
+                            <Badge variant="secondary" className="text-xs">AI</Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   ))}
-                  <div className="text-xs opacity-70 mt-1">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </div>
-                </div>
-              </div>
-            ))}
-            {isChatProcessing && (
-              <div className="flex justify-start">
-                <div className="bg-muted text-foreground p-3 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
+                  {isChatProcessing && (
+                    <div className="flex justify-start animate-fade-in">
+                      <div className="bg-surface border border-border-subtle text-foreground p-3 rounded-lg shadow-sm">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-accent-cyan rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-accent-cyan rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-accent-cyan rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                          <span className="text-xs text-muted ml-2">AI is thinking...</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </>
+              )}
+            </div>
 
-          <div className="space-y-2 flex-shrink-0">
-            <Textarea
-              placeholder="Ask the AI assistant anything about your code..."
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSendMessage())}
-              className="min-h-[80px] bg-background/50 border-border/50"
-              disabled={isChatProcessing}
-            />
-            <div className="flex space-x-2">
-              <Button
-                onClick={handleSendMessage}
-                disabled={isChatProcessing || !inputMessage.trim()}
-                className="flex-1"
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Send Message
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleOptimizeCode}
-                disabled={isAnalyzing || !state.activeFileId}
-                title="Optimize Current File"
-              >
-                <Wand2 className="w-4 h-4" />
-              </Button>
+            {/* Input Area - Always Visible */}
+            <div className="space-y-3 flex-shrink-0 bg-surface/50 p-3 rounded-lg border border-border-subtle">
+              <Textarea
+                placeholder="Ask the AI assistant anything about your code..."
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSendMessage())}
+                className="min-h-[80px] bg-background/80 border-border/60 focus:border-accent-cyan/50 focus:ring-accent-cyan/20 resize-none"
+                disabled={isChatProcessing}
+              />
+              <div className="flex space-x-2">
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={isChatProcessing || !inputMessage.trim()}
+                  className="flex-1 bg-primary hover:bg-primary-hover"
+                >
+                  {isChatProcessing ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4 mr-2" />
+                  )}
+                  Send Message
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleOptimizeCode}
+                  disabled={isAnalyzing || !state.activeFileId}
+                  title="Optimize Current File"
+                  className="border-border-subtle hover:border-accent-cyan/50"
+                >
+                  <Wand2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </TabsContent>

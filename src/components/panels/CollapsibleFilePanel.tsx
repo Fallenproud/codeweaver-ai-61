@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FileExplorer } from '@/components/advanced/FileExplorer';
 import { EnhancedPreview } from '@/components/advanced/EnhancedPreview';
 import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor';
+import { UsageAnalytics } from '@/components/analytics/UsageAnalytics';
 import { cn } from '@/lib/utils';
 
 interface CollapsibleFilePanelProps {
@@ -95,18 +96,23 @@ export const CollapsibleFilePanel: React.FC<CollapsibleFilePanelProps> = ({ clas
             {/* Sub-panel Content */}
             <div className="flex-1 overflow-hidden">
               {activeSubPanel === 'files' && (
-                <div className="h-full">
+                <div className="h-full bg-background/30">
                   <FileExplorer />
                 </div>
               )}
               {activeSubPanel === 'preview' && (
-                <div className="h-full">
+                <div className="h-full bg-background/30">
                   <EnhancedPreview />
                 </div>
               )}
               {activeSubPanel === 'performance' && (
-                <div className="h-full overflow-auto">
-                  <PerformanceMonitor />
+                <div className="h-full overflow-auto bg-background/30 p-3">
+                  <div className="space-y-4">
+                    <PerformanceMonitor />
+                    <div className="border-t border-border-subtle pt-4">
+                      <UsageAnalytics />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

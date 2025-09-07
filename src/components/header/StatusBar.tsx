@@ -14,6 +14,7 @@ import {
   CheckCircle2 
 } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
+import { RealTimeCollaboration } from '@/components/features/RealTimeCollaboration';
 
 interface StatusBarProps {
   className?: string;
@@ -103,17 +104,8 @@ export const StatusBar: React.FC<StatusBarProps> = ({ className }) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        {/* Collaborators */}
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-6 px-2 hover:bg-surface-hover"
-        >
-          <div className="flex items-center space-x-1">
-            <Users className="w-3 h-3 text-muted" />
-            <span className="text-muted">{collaborators}</span>
-          </div>
-        </Button>
+        {/* Real-time Collaboration */}
+        <RealTimeCollaboration />
 
         <Separator orientation="vertical" className="h-4" />
 
