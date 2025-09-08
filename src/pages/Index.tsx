@@ -1,8 +1,8 @@
 
-import Dashboard from '../components/Dashboard';
+import ResponsiveDashboard from '../components/layout/ResponsiveDashboard';
 
 const Index = () => {
-  return <Dashboard />;
+  return <ResponsiveDashboard />;
 };
 
 export default Index;

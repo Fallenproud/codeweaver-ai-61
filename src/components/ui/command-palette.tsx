@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Search, File, Settings, History, Zap, Code, Play, Save, Download, Share2, Github } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Command, 
+  CommandDialog, 
+  CommandEmpty, 
+  CommandGroup, 
+  CommandInput, 
+  CommandItem, 
+  CommandList 
+} from '@/components/ui/command';
+import { 
+  DialogDescription,
+  DialogTitle
+} from '@/components/ui/dialog';
+import { Search, FileText, Settings, History, Palette, Code, Play, Download } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
-
-interface CommandAction {
-  id: string;
-  title: string;
-  description?: string;
-  icon: React.ComponentType<any>;
-  shortcut?: string;
-  category: string;
-  action: () => void;
-}
 
 interface CommandPaletteProps {
   open: boolean;
@@ -22,202 +22,113 @@ interface CommandPaletteProps {
 
 export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onOpenChange }) => {
   const { state, dispatch } = useAppContext();
-  const [search, setSearch] = useState('');
-
-  const actions: CommandAction[] = useMemo(() => [
-    // Navigation
-    {
-      id: 'goto-editor',
-      title: 'Go to Editor',
-      description: 'Switch to code editor view',
-      icon: Code,
-      shortcut: '⌘1',
-      category: 'Navigation',
-      action: () => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'editor' })
-    },
-    {
-      id: 'goto-history',
-      title: 'Go to History',
-      description: 'View generation history',
-      icon: History,
-      shortcut: '⌘2',
-      category: 'Navigation',
-      action: () => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'history' })
-    },
-    {
-      id: 'goto-templates',
-      title: 'Go to Templates',
-      description: 'Browse template library',
-      icon: File,
-      shortcut: '⌘3',
-      category: 'Navigation',
-      action: () => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'templates' })
-    },
-    {
-      id: 'goto-settings',
-      title: 'Go to Settings',
-      description: 'Open application settings',
-      icon: Settings,
-      shortcut: '⌘,',
-      category: 'Navigation',
-      action: () => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'settings' })
-    },
-    // Actions
-    {
-      id: 'generate-code',
-      title: 'Generate Code',
-      description: 'Start AI code generation',
-      icon: Zap,
-      shortcut: '⌘G',
-      category: 'Actions',
-      action: () => {
-        dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'editor' });
-        // Focus on AI input would be implemented here
-      }
-    },
-    {
-      id: 'run-code',
-      title: 'Run Code',
-      description: 'Execute current code',
-      icon: Play,
-      shortcut: '⌘R',
-      category: 'Actions',
-      action: () => console.log('Run code')
-    },
-    {
-      id: 'save-project',
-      title: 'Save Project',
-      description: 'Save all changes',
-      icon: Save,
-      shortcut: '⌘S',
-      category: 'Actions',
-      action: () => console.log('Save project')
-    },
-    // Export
-    {
-      id: 'export-github',
-      title: 'Export to GitHub',
-      description: 'Export project to GitHub repository',
-      icon: Github,
-      category: 'Export',
-      action: () => console.log('Export to GitHub')
-    },
-    {
-      id: 'download-zip',
-      title: 'Download as ZIP',
-      description: 'Download project files as ZIP',
-      icon: Download,
-      category: 'Export',
-      action: () => console.log('Download ZIP')
-    },
-    {
-      id: 'share-project',
-      title: 'Share Project',
-      description: 'Create shareable link',
-      icon: Share2,
-      category: 'Export',
-      action: () => console.log('Share project')
-    },
-    // Sidebar
-    {
-      id: 'toggle-sidebar',
-      title: 'Toggle Sidebar',
-      description: 'Show or hide sidebar',
-      icon: File,
-      shortcut: '⌘B',
-      category: 'View',
-      action: () => dispatch({ type: 'SET_SIDEBAR_COLLAPSED', payload: !state.sidebarCollapsed })
-    }
-  ], [state, dispatch]);
-
-  const filteredActions = useMemo(() => {
-    if (!search.trim()) return actions;
-    
-    return actions.filter(action =>
-      action.title.toLowerCase().includes(search.toLowerCase()) ||
-      action.description?.toLowerCase().includes(search.toLowerCase()) ||
-      action.category.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [actions, search]);
-
-  const groupedActions = useMemo(() => {
-    const groups: Record<string, CommandAction[]> = {};
-    filteredActions.forEach(action => {
-      if (!groups[action.category]) {
-        groups[action.category] = [];
-      }
-      groups[action.category].push(action);
-    });
-    return groups;
-  }, [filteredActions]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        onOpenChange(true);
+        onOpenChange(!open);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onOpenChange]);
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, [open, onOpenChange]);
 
-  const handleAction = (action: CommandAction) => {
-    action.action();
+  const handleCommand = (command: string) => {
+    switch (command) {
+      case 'new-file':
+        // Handle new file creation
+        break;
+      case 'settings':
+        dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'settings' });
+        break;
+      case 'history':
+        dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'history' });
+        break;
+      case 'templates':
+        dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'templates' });
+        break;
+      case 'editor':
+        dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'editor' });
+        break;
+      default:
+        break;
+    }
     onOpenChange(false);
-    setSearch('');
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 max-w-2xl">
-        <Command shouldFilter={false}>
-          <div className="flex items-center border-b border-border px-4">
-            <Search className="w-4 h-4 mr-2 text-muted" />
-            <CommandInput
-              placeholder="Search commands..."
-              value={search}
-              onValueChange={setSearch}
-              className="border-0 focus:ring-0 text-sm"
-            />
-            <Badge variant="secondary" className="ml-auto text-xs">
-              ⌘K
-            </Badge>
-          </div>
-          <CommandList className="max-h-80">
-            <CommandEmpty className="py-6 text-center text-sm text-muted">
-              No commands found for "{search}"
-            </CommandEmpty>
-            {Object.entries(groupedActions).map(([category, categoryActions]) => (
-              <CommandGroup key={category} heading={category}>
-                {categoryActions.map((action) => (
-                  <CommandItem
-                    key={action.id}
-                    onSelect={() => handleAction(action)}
-                    className="flex items-center justify-between px-4 py-3 cursor-pointer"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <action.icon className="w-4 h-4 text-muted" />
-                      <div>
-                        <div className="text-sm font-medium">{action.title}</div>
-                        {action.description && (
-                          <div className="text-xs text-muted">{action.description}</div>
-                        )}
-                      </div>
-                    </div>
-                    {action.shortcut && (
-                      <Badge variant="outline" className="text-xs">
-                        {action.shortcut}
-                      </Badge>
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            ))}
-          </CommandList>
-        </Command>
-      </DialogContent>
-    </Dialog>
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
+      <DialogTitle className="sr-only">Command Palette</DialogTitle>
+      <DialogDescription className="sr-only">
+        Search for commands, files, and navigate through the application
+      </DialogDescription>
+      <CommandInput 
+        placeholder="Type a command or search..." 
+        value={searchQuery}
+        onValueChange={setSearchQuery}
+      />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        
+        <CommandGroup heading="Navigation">
+          <CommandItem onSelect={() => handleCommand('editor')}>
+            <Code className="mr-2 h-4 w-4" />
+            <span>Go to Editor</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleCommand('history')}>
+            <History className="mr-2 h-4 w-4" />
+            <span>View History</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleCommand('templates')}>
+            <Palette className="mr-2 h-4 w-4" />
+            <span>Browse Templates</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleCommand('settings')}>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Open Settings</span>
+          </CommandItem>
+        </CommandGroup>
+
+        <CommandGroup heading="Actions">
+          <CommandItem onSelect={() => handleCommand('new-file')}>
+            <FileText className="mr-2 h-4 w-4" />
+            <span>Create New File</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleCommand('run-code')}>
+            <Play className="mr-2 h-4 w-4" />
+            <span>Run Code</span>
+          </CommandItem>
+          <CommandItem onSelect={() => handleCommand('download')}>
+            <Download className="mr-2 h-4 w-4" />
+            <span>Download Project</span>
+          </CommandItem>
+        </CommandGroup>
+
+        {state.currentProject?.files && (
+          <CommandGroup heading="Files">
+            {state.currentProject.files
+              .filter(file => 
+                searchQuery === '' || 
+                file.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map(file => (
+                <CommandItem 
+                  key={file.id}
+                  onSelect={() => {
+                    dispatch({ type: 'SET_ACTIVE_FILE', payload: file.id });
+                    onOpenChange(false);
+                  }}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>{file.name}</span>
+                </CommandItem>
+              ))}
+          </CommandGroup>
+        )}
+      </CommandList>
+    </CommandDialog>
   );
 };
