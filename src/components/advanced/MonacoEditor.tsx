@@ -102,8 +102,16 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
   if (!currentFile) {
     return (
-      <div className="h-full flex items-center justify-center text-muted">
-        <p>Select a file to start editing</p>
+      <div className="h-full flex flex-col items-center justify-center bg-editor-bg border border-border-subtle rounded-lg">
+        <div className="text-center space-y-3 p-8">
+          <div className="w-16 h-16 mx-auto bg-surface/50 rounded-full flex items-center justify-center mb-4">
+            <Settings className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-medium text-foreground">No File Selected</h3>
+          <p className="text-muted-foreground max-w-md">
+            Choose a file from the file explorer on the right to start editing, or create a new file to begin coding.
+          </p>
+        </div>
       </div>
     );
   }
