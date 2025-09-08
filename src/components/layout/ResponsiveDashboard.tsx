@@ -2,7 +2,7 @@
 import React from 'react';
 import { useResponsive } from '@/hooks/useResponsive';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { LoadingOverlay } from '@/components/ui/loading-spinner';
+import { LoadingOverlay } from '@/components/ui/loading-overlay';
 import { Sidebar } from '@/components/Sidebar';
 import { MonacoEditor } from '@/components/advanced/MonacoEditor';
 import { TemplateLibrary } from '@/components/TemplateLibrary';
@@ -186,7 +186,7 @@ const ResponsiveDashboard = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
-      <LoadingOverlay isVisible={state.isGenerating} text="Generating code..." />
+      <LoadingOverlay isLoading={state.isGenerating} message="Generating code..." />
       
       <ErrorBoundary>
         <Header />

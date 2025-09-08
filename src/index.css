@@ -96,6 +96,30 @@
   -webkit-backdrop-filter: blur(12px);
 }
 
+.glass-panel {
+  background: hsla(var(--surface) / 0.8);
+  border: 1px solid hsla(var(--border) / 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.status-indicator {
+  position: relative;
+}
+
+.status-indicator::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--accent-green));
+  border: 2px solid hsl(var(--background));
+  box-shadow: 0 0 4px hsla(var(--accent-green) / 0.5);
+}
+
 .gradient-primary {
   background: var(--gradient-primary);
 }
