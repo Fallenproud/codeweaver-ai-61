@@ -10,6 +10,8 @@ import { CollaborationProvider } from "@/contexts/CollaborationContext";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import SharedProject from "./pages/SharedProject";
+import ShortUrl from "./pages/ShortUrl";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +40,8 @@ const App = () => (
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/shared/:shareId" element={<SharedProject />} />
+                  <Route path="/s/:shortId" element={<ShortUrl />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

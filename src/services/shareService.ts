@@ -108,18 +108,22 @@ class ShareService {
 
   private async generateQRCode(url: string): Promise<string> {
     try {
-      // Use QR Server API for generating QR codes
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+      // Use the qrcode library for better QR code generation
+      const QRCode = await import('qrcode');
       
-      // Test if the QR service is available
-      const response = await fetch(qrApiUrl, { method: 'HEAD' });
+      const qrCodeDataUrl = await QRCode.toDataURL(url, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
       
-      if (response.ok) {
-        return qrApiUrl;
-      }
-      
-      throw new Error('QR service unavailable');
+      return qrCodeDataUrl;
     } catch (error) {
+      console.warn('QRCode library not available, using fallback');
+      
       // Fallback: generate a simple SVG QR code placeholder
       const svgQR = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
         <rect width="200" height="200" fill="white" stroke="#e5e7eb" stroke-width="2"/>
